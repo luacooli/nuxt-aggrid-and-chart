@@ -1,0 +1,19 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "ag-grid-charts-enterprise": "^32.1.0",
+    "ag-grid-enterprise": "^32.1.0",
+    "ag-grid-vue3": "^32.1.0",
+    "nuxt": "^3.12.4",
+    "vue": "latest"
+  }
+}
