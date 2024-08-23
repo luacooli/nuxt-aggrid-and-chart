@@ -1,5 +1,8 @@
 <template>
-  <h1>Vue Grid graph demo</h1>
+  <div>
+    <NuxtLink to="/pivot">see pivot grid chart -></NuxtLink>
+    <h1>Vue Grid graph demo</h1>
+  </div>
 
   <h2>Range Chart</h2>
   <ag-grid-vue :rowData="rowData" :columnDefs="columnDefs" style="width: 98%; height: 500px" class="ag-theme-quartz"
