@@ -1,7 +1,7 @@
 <template>
   <div>
-    <NuxtLink to="/pivot">see pivot</NuxtLink>
-    <NuxtLink to="/pivot-active">see pivot active</NuxtLink>
+    <NuxtLink to="/pivot">pivot</NuxtLink>
+    <NuxtLink to="/pivot-active">pivot active</NuxtLink>
   </div>
 
   <h1>Vue Grid graph demo</h1>

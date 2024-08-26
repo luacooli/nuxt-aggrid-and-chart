@@ -1,7 +1,7 @@
 <template>
   <div>
-    <NuxtLink to="/">see range chart</NuxtLink>
-    <NuxtLink to="/pivot-active">see pivot active</NuxtLink>
+    <NuxtLink to="/">range chart</NuxtLink>
+    <NuxtLink to="/pivot-active">pivot active</NuxtLink>
   </div>
 
   <h2>Pivot Mode</h2>

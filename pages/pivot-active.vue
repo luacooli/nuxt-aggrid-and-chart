@@ -1,7 +1,7 @@
 <template>
   <div>
-    <NuxtLink to="/">see range chart</NuxtLink>
-    <NuxtLink to="/pivot">see pivot</NuxtLink>
+    <NuxtLink to="/">range chart</NuxtLink>
+    <NuxtLink to="/pivot">pivot</NuxtLink>
   </div>
 
   <h2>Pivot Mode and pivot active</h2>
@@ -9,13 +9,13 @@
     <button @click="onBtNormal()">1 - Grouping Active</button>
     <button @click="onBtPivotMode()">2 - Grouping Active with Pivot Mode</button>
     <button @click="onBtFullPivot()">3 - Grouping Active with Pivot Mode and Pivot Active</button>
-    <button @click="onBtFullTwoPivot()">4 - Grouping Active with Pivot Mode and Two Pivots Active</button>
+    <button @click="onBtFullTwoPivot()">4 - Expandable Pivot Column</button>
   </div>
 
   <ag-grid-vue style="width: 98%; height: 100%;" :class="themeClass" :columnDefs="columnDefs" @grid-ready="onGridReady"
     :defaultColDef="defaultColDef" :autoGroupColumnDef="autoGroupColumnDef" :rowData="rowData" :enableCharts="true"
     :enableRangeSelection="true" :enableRangeHandle="true" rowGroupPanelShow="always" :pivotMode="true" :sideBar="true"
-    :enablePivot=true>
+    :processPivotResultColGroupDef="processPivotResultColGroupDef" :suppressExpandablePivotGroups=true>
   </ag-grid-vue>
 </template>
 
@@ -33,11 +33,11 @@ export default {
   },
   setup(props) {
     const columnDefs = ref([
-      { field: "country", rowGroup: true, enableRowGroup: true },
-      { field: "year", rowGroup: true, enableRowGroup: true },
-      { field: "date", enableRowGroup: true }, // disappear with pivot 
+      { field: "country", rowGroup: true, enableRowGroup: true, enablePivot: true },
+      { field: "year", rowGroup: true, enableRowGroup: true, enablePivot: true },
+      { field: "date", enableRowGroup: true, enablePivot: true }, // disappear with pivot 
       { field: "athlete" }, // disappear with pivot 
-      { field: "sport", pivot: true, enableRowGroup: true },
+      { field: "sport", pivot: true, enableRowGroup: true, enablePivot: true },
       { field: "gold", aggFunc: "sum" },
       { field: "silver", aggFunc: "sum" },
       { field: "bronze", aggFunc: "sum" },
@@ -108,6 +108,15 @@ export default {
         },
       });
     };
+    const processPivotResultColGroupDef = (colGroupDef) => {
+      console.log(colGroupDef);
+
+      if (colGroupDef.pivotKeys.length && colGroupDef.pivotKeys[0] === 'Archery') {
+        colGroupDef.headerClass = 'color-background'
+      }
+      colGroupDef.headerName = ":) " + colGroupDef.headerName
+    };
+
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
@@ -139,6 +148,7 @@ export default {
       onBtPivotMode,
       onBtFullPivot,
       onBtFullTwoPivot,
+      processPivotResultColGroupDef,
     };
   },
 };
@@ -151,6 +161,10 @@ a {
 
 .btn__container button {
   margin: 0.6rem;
+}
+
+.color-background {
+  background: red;
 }
 
 .ag-root-wrapper-body.ag-layout-normal.ag-focus-managed {
