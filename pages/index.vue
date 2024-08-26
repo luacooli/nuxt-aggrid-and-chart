@@ -1,8 +1,10 @@
 <template>
   <div>
-    <NuxtLink to="/pivot">see pivot grid chart -></NuxtLink>
-    <h1>Vue Grid graph demo</h1>
+    <NuxtLink to="/pivot">see pivot</NuxtLink>
+    <NuxtLink to="/pivot-active">see pivot active</NuxtLink>
   </div>
+
+  <h1>Vue Grid graph demo</h1>
 
   <h2>Range Chart</h2>
   <ag-grid-vue :rowData="rowData" :columnDefs="columnDefs" style="width: 98%; height: 500px" class="ag-theme-quartz"
@@ -32,7 +34,7 @@ export default {
   },
   setup() {
     const columnDefs = ref([
-      { field: "athlete", headerName: "Athlete", minWidth: 150 },
+      { field: "athlete", headerName: "Athlete", minWidth: 150, enableRowGroup: true },
       { field: "gold", headerName: "Gold Medals" },
       { field: "silver", headerName: "Silver Medals" },
       { field: "bronze", headerName: "Bronze Medals" },
