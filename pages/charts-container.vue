@@ -3,17 +3,20 @@
     <NuxtLink to="/">range chart</NuxtLink>
     <NuxtLink to="/pivot">pivot</NuxtLink>
     <NuxtLink to="/pivot-active">pivot active</NuxtLink>
+    <NuxtLink to="/pivot-totals">pivot totals</NuxtLink>
     <NuxtLink to="/charts">charts</NuxtLink>
-    <NuxtLink to="/charts-container">charts container</NuxtLink>
   </div>
 
-  <h2>Pivot Totals</h2>
+  <h2>Charts Container</h2>
 
-  <ag-grid-vue style="width: 98%; height: 100%;" :class="themeClass" :columnDefs="columnDefs" @grid-ready="onGridReady"
-    :defaultColDef="defaultColDef" :autoGroupColumnDef="autoGroupColumnDef" :rowData="rowData" :enableCharts="true"
-    :enableRangeSelection="true" :enableRangeHandle="false" :pivotMode="true" :sideBar="true"
-    pivotColumnGroupTotals="before" :processPivotResultColGroupDef="processPivotResultColGroupDef">
-  </ag-grid-vue>
+  <div id="container">
+    <ag-grid-vue style="width: 98%; height: 100%;" :class="themeClass" :columnDefs="columnDefs"
+      @grid-ready="onGridReady" :defaultColDef="defaultColDef" :autoGroupColumnDef="autoGroupColumnDef"
+      :rowData="rowData" :enableCharts="true" :enableRangeSelection="true" :enableRangeHandle="true"
+      rowGroupPanelShow="always" :pivotMode="true" :sideBar="true" :createChartContainer="createChartContainer">
+    </ag-grid-vue>
+  </div>
+
 </template>
 
 <script>
@@ -30,14 +33,14 @@ export default {
   },
   setup(props) {
     const columnDefs = ref([
-      { field: "country", rowGroup: true, enableRowGroup: true, enablePivot: true },
-      { field: "sport", enableRowGroup: true, enablePivot: true },
-      { field: "year", enableRowGroup: true, pivot: true, enablePivot: true },
+      { field: "country", enableRowGroup: true, enablePivot: true },
+      { field: "year", chartType: 'category', enableRowGroup: true, enablePivot: true },
       { field: "date", enableRowGroup: true, enablePivot: true }, // disappear with pivot 
       { field: "athlete" }, // disappear with pivot 
-      { field: "gold", aggFunc: "sum" },
-      { field: "silver", aggFunc: "sum" },
-      { field: "bronze", aggFunc: "sum" },
+      { field: "sport", enableRowGroup: true, enablePivot: true },
+      { field: "gold", chartType: 'series', aggFunc: "sum" },
+      { field: "silver", chartType: 'series', aggFunc: "sum" },
+      { field: "bronze", chartType: 'series', aggFunc: "sum" },
     ]);
     const gridApi = shallowRef();
     const defaultColDef = ref({
@@ -53,24 +56,32 @@ export default {
       };
     });
 
-    const onBtFullPivot = () => {
-      gridApi.value.setGridOption("pivotMode", true);
-      gridApi.value.applyColumnState({
-        state: [
-          { colId: "country", rowGroup: true },
-          { colId: "year", pivot: true },
-        ],
-        defaultState: {
-          pivot: false,
-          rowGroup: false,
-        },
-      });
-    };
-    const processPivotResultColGroupDef = (colGroupDef) => {
-      if (colGroupDef.pivotKeys.length && colGroupDef.pivotKeys[0] === '2000') {
-        colGroupDef.headerClass = 'color-background'
-      }
-      colGroupDef.headerName = ':) ' + colGroupDef.headerName
+    const createChartContainer = (chartRef) => {
+      console.log(chartRef);
+
+      const eChart = chartRef.chartElement;
+      const eParent = document.querySelector("#container");
+      const chartWrapperHTML = `
+        <div class="chart-wrapper ag-theme-quartz-dark}">
+          <div class="chart-wrapper-top">
+            <h2 class="chart-wrapper-title">Chart Container</h2>
+            <button class="chart-wrapper-close">Destroy Chart</button>
+          </div>
+          <div class="chart-wrapper-body"></div>
+        </div>
+      `;
+
+      eParent.insertAdjacentHTML("beforeend", chartWrapperHTML); // inserts the resulting nodes inside the element after its last child
+
+      const eChartWrapper = eParent.lastElementChild;
+
+      eChartWrapper.querySelector(".chart-wrapper-body").appendChild(eChart); // append chart to an element
+      eChartWrapper
+        .querySelector(".chart-wrapper-close")
+        .addEventListener("click", () => {
+          chartRef.destroyChart();
+          eParent.removeChild(eChartWrapper);
+        });
     };
 
     const onGridReady = (params) => {
@@ -99,7 +110,7 @@ export default {
       onGridReady,
       themeClass:
         "ag-theme-quartz-dark",
-      processPivotResultColGroupDef
+      createChartContainer
     };
   },
 };

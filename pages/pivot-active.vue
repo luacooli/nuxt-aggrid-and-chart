@@ -3,6 +3,8 @@
     <NuxtLink to="/">range chart</NuxtLink>
     <NuxtLink to="/pivot">pivot</NuxtLink>
     <NuxtLink to="/pivot-totals">pivot totals</NuxtLink>
+    <NuxtLink to="/charts">charts</NuxtLink>
+    <NuxtLink to="/charts-container">charts container</NuxtLink>
   </div>
 
   <h2>Pivot Mode and pivot active</h2>
