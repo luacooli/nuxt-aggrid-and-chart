@@ -2,6 +2,7 @@
   <div>
     <NuxtLink to="/pivot">pivot</NuxtLink>
     <NuxtLink to="/pivot-active">pivot active</NuxtLink>
+    <NuxtLink to="/pivot-totals">pivot totals</NuxtLink>
   </div>
 
   <h1>Vue Grid graph demo</h1>

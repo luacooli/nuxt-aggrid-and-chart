@@ -2,6 +2,7 @@
   <div>
     <NuxtLink to="/">range chart</NuxtLink>
     <NuxtLink to="/pivot-active">pivot active</NuxtLink>
+    <NuxtLink to="/pivot-totals">pivot totals</NuxtLink>
   </div>
 
   <h2>Pivot Mode</h2>
@@ -27,8 +28,8 @@ export default {
   setup(props) {
     const columnDefs = ref([
       { field: "country", rowGroup: true, enableRowGroup: true },
-      { field: "year", rowGroup: true, enableRowGroup: true },
-      { field: "date" }, // disappear with pivot 
+      { field: "year", rowGroup: true, enableRowGroup: true, enablePivot: true },
+      { field: "date", enablePivot: true }, // disappear with pivot 
       { field: "athlete" }, // disappear with pivot 
       { field: "sport", pivot: true },
       { field: "gold", aggFunc: "sum" },
