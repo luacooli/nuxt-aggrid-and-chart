@@ -4,17 +4,23 @@
     <NuxtLink to="/pivot">pivot</NuxtLink>
     <NuxtLink to="/pivot-active">pivot active</NuxtLink>
     <NuxtLink to="/pivot-totals">pivot totals</NuxtLink>
-    <NuxtLink to="/charts">charts</NuxtLink>
+    <NuxtLink to="/charts-container">charts container</NuxtLink>
   </div>
 
-  <h2>Charts Container</h2>
+  <h2>Charts manipulation</h2>
+
+  <div class="btn__container">
+    <button @click="updateAxis()">1 - Change AxisX To Age</button>
+  </div>
 
   <div id="container">
     <ag-grid-vue style="width: 98%; height: 100%;" :class="themeClass" :columnDefs="columnDefs"
       @grid-ready="onGridReady" :defaultColDef="defaultColDef" :autoGroupColumnDef="autoGroupColumnDef"
       :rowData="rowData" :enableCharts="true" :enableRangeSelection="true" :enableRangeHandle="true"
-      rowGroupPanelShow="always" :pivotMode="true" :sideBar="true" :createChartContainer="createChartContainer">
+      rowGroupPanelShow="always" :sideBar="true" :chartToolPanelsDef="chartToolPanelsDef"
+      @first-data-rendered="onFirstDataRendered">
     </ag-grid-vue>
+    <div id="myChart" class="ag-theme-quartz my-chart"></div>
   </div>
 
 </template>
@@ -33,14 +39,13 @@ export default {
   },
   setup(props) {
     const columnDefs = ref([
-      { field: "country", enableRowGroup: true, enablePivot: true },
-      { field: "year", chartType: 'category', enableRowGroup: true, enablePivot: true },
-      { field: "date", enableRowGroup: true, enablePivot: true }, // disappear with pivot 
-      { field: "athlete" }, // disappear with pivot 
-      { field: "sport", enableRowGroup: true, enablePivot: true },
-      { field: "gold", chartType: 'series', aggFunc: "sum" },
-      { field: "silver", chartType: 'series', aggFunc: "sum" },
-      { field: "bronze", chartType: 'series', aggFunc: "sum" },
+      { field: "athlete", width: 150, chartDataType: "category" },
+      { field: "age", chartDataType: "category", sort: "asc" },
+      { field: "sport" },
+      { field: "year", chartDataType: "excluded" },
+      { field: "gold", chartDataType: "series" },
+      { field: "silver", chartDataType: "series" },
+      { field: "bronze" },
     ]);
     const gridApi = shallowRef();
     const defaultColDef = ref({
@@ -49,6 +54,7 @@ export default {
     });
     const autoGroupColumnDef = ref(null);
     const rowData = ref(null);
+    const chartToolPanelsDef = ref(null);
 
     onBeforeMount(() => {
       autoGroupColumnDef.value = {
@@ -56,33 +62,36 @@ export default {
       };
     });
 
-    const createChartContainer = (chartRef) => {
+    const onFirstDataRendered = (params) => {
+      params.api.createRangeChart({
+        chartContainer: document.querySelector("#myChart"), // onde o gráfico será renderizado no DOM
+        cellRange: {
+          rowStartIndex: 0,
+          rowEndIndex: 79,
+          columns: ["sport", "gold", "silver", "bronze"],
+        },
+        chartType: "line",
+        aggFunc: "sum",
+      });
+    };
+
+    const updateAxis = () => {
+      const chartRef = gridApi.value.getChartModels()[0];
+
       console.log(chartRef);
 
-      const eChart = chartRef.chartElement;
-      const eParent = document.querySelector("#container");
-      const chartWrapperHTML = `
-        <div class="chart-wrapper ag-theme-quartz-dark}">
-          <div class="chart-wrapper-top">
-            <h2 class="chart-wrapper-title">Chart Container</h2>
-            <button class="chart-wrapper-close">Destroy Chart</button>
-          </div>
-          <div class="chart-wrapper-body"></div>
-        </div>
-      `;
-
-      eParent.insertAdjacentHTML("beforeend", chartWrapperHTML); // inserts the resulting nodes inside the element after its last child
-
-      const eChartWrapper = eParent.lastElementChild;
-
-      eChartWrapper.querySelector(".chart-wrapper-body").appendChild(eChart); // append chart to an element
-      eChartWrapper
-        .querySelector(".chart-wrapper-close")
-        .addEventListener("click", () => {
-          chartRef.destroyChart();
-          eParent.removeChild(eChartWrapper);
-        });
-    };
+      gridApi.value.createRangeChart({
+        chartId: chartRef.chartId,
+        cellRange: {
+          rowStartIndex: 0,
+          rowEndIndex: 79,
+          columns: ['age', 'gold', 'silver', 'bronze'],
+        },
+        chartType: chartRef.chartType,
+        aggFunc: chartRef.aggFunc,
+        switchCategorySeries: chartRef.switchCategorySeries,
+      })
+    }
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
@@ -110,7 +119,8 @@ export default {
       onGridReady,
       themeClass:
         "ag-theme-quartz-dark",
-      createChartContainer
+      onFirstDataRendered,
+      updateAxis,
     };
   },
 };
