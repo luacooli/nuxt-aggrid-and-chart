@@ -28,7 +28,7 @@
 <script>
 import { ref, shallowRef, onBeforeMount } from "vue";
 import "ag-grid-enterprise"; // community + advanced functionalities
-import "ag-grid-charts-enterprise"; // community + advanced functionalities
+import "ag-grid-charts-enterprise"; // community + advanced chart functionalities
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { AgGridVue } from "ag-grid-vue3"; // Vue Data Grid Component
@@ -81,6 +81,7 @@ export default {
       console.log(chartRef);
 
       gridApi.value.createRangeChart({
+        chartContainer: document.querySelector("#myChart"), // onde o gráfico será renderizado no DOM
         chartId: chartRef.chartId,
         cellRange: {
           rowStartIndex: 0,

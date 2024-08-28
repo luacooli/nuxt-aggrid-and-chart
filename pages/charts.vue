@@ -7,7 +7,7 @@
     <NuxtLink to="/charts-container">charts container</NuxtLink>
   </div>
 
-  <h2>Charts manipulation</h2>
+  <h2>Charts simple exemaple</h2>
 
   <div id="container">
     <ag-grid-vue style="width: 98%; height: 100%;" :class="themeClass" :columnDefs="columnDefs"
@@ -23,7 +23,7 @@
 <script>
 import { ref, shallowRef, onBeforeMount } from "vue";
 import "ag-grid-enterprise"; // community + advanced functionalities
-import "ag-grid-charts-enterprise"; // community + advanced functionalities
+import "ag-grid-charts-enterprise"; // community + advanced chart functionalities
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { AgGridVue } from "ag-grid-vue3"; // Vue Data Grid Component
